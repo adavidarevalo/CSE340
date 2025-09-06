@@ -1,0 +1,25 @@
+{
+  "name": "cse340-mvc-starter",
+  "version": "1.0.0",
+  "description": "CSE 340 MVC Starter Project",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "keywords": [
+    "express",
+    "mvc",
+    "cse340"
+  ],
+  "author": "David Arevalo",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  }
+}
