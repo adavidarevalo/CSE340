@@ -1,0 +1,150 @@
+<% if (title) { %>
+  <h1><%= title %></h1>
+<% } else {res.redirect('/')} %>
+
+<%- messages() %>
+
+<% if (errors) { %>
+  <ul class="notice">
+   <% errors.array().forEach(error => { %>
+     <li><%= error.msg %></li>
+  <%  }) %>
+   </ul>
+<% } %>
+
+<form action="/inv/add-inventory" method="post" id="inventoryForm">
+  <fieldset>
+    <p>All fields are required.</p>
+    
+    <label for="classificationList">Classification</label>
+    <%- classificationList %>
+    
+    <label for="inv_make">Make</label>
+    <input type="text" id="inv_make" name="inv_make" required placeholder="Min of 3 characters"
+           <% if(locals.inv_make) { %>value="<%= locals.inv_make %>"<% } %>>
+    
+    <label for="inv_model">Model</label>
+    <input type="text" id="inv_model" name="inv_model" required placeholder="Min of 3 characters"
+           <% if(locals.inv_model) { %>value="<%= locals.inv_model %>"<% } %>>
+    
+    <label for="inv_description">Description</label>
+    <textarea id="inv_description" name="inv_description" required rows="4"><% if(locals.inv_description) { %><%= locals.inv_description %><% } %></textarea>
+    
+    <label for="inv_image">Image Path</label>
+    <input type="text" id="inv_image" name="inv_image" required
+           <% if(locals.inv_image) { %>value="<%= locals.inv_image %>"<% } else { %>value="/images/vehicles/no-image.png"<% } %>>
+    
+    <label for="inv_thumbnail">Thumbnail Path</label>
+    <input type="text" id="inv_thumbnail" name="inv_thumbnail" required
+           <% if(locals.inv_thumbnail) { %>value="<%= locals.inv_thumbnail %>"<% } else { %>value="/images/vehicles/no-image-tn.png"<% } %>>
+    
+    <label for="inv_price">Price</label>
+    <input type="number" id="inv_price" name="inv_price" required step="0.01" min="0" placeholder="Decimal or integer"
+           <% if(locals.inv_price) { %>value="<%= locals.inv_price %>"<% } %>>
+    
+    <label for="inv_year">Year</label>
+    <input type="number" id="inv_year" name="inv_year" required min="1900" max="<%= new Date().getFullYear() + 1 %>" placeholder="4-digit year"
+           <% if(locals.inv_year) { %>value="<%= locals.inv_year %>"<% } %>>
+    
+    <label for="inv_miles">Miles</label>
+    <input type="number" id="inv_miles" name="inv_miles" required min="0" placeholder="Digits only"
+           <% if(locals.inv_miles) { %>value="<%= locals.inv_miles %>"<% } %>>
+    
+    <label for="inv_color">Color</label>
+    <input type="text" id="inv_color" name="inv_color" required
+           <% if(locals.inv_color) { %>value="<%= locals.inv_color %>"<% } %>>
+    
+    <input type="submit" value="Add Vehicle" id="inventoryButton">
+  </fieldset>
+</form>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const form = document.querySelector("#inventoryForm");
+  const inputs = form.querySelectorAll("input, select, textarea");
+  
+  form.addEventListener("submit", function(event) {
+    let isValid = true;
+    
+    // Check all required fields
+    inputs.forEach(input => {
+      if (input.hasAttribute('required') && !input.value.trim()) {
+        isValid = false;
+        input.style.border = "2px solid red";
+      } else {
+        input.style.border = "";
+      }
+    });
+    
+    if (!isValid) {
+      event.preventDefault();
+      alert("Please fill in all required fields");
+    }
+  });
+  
+  // Remove red border when user starts typing
+  inputs.forEach(input => {
+    input.addEventListener('input', function() {
+      this.style.border = "";
+    });
+  });
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const form = document.querySelector("#inventoryForm");
+  const inputs = form.querySelectorAll("input, select, textarea");
+  
+  form.addEventListener("submit", function(event) {
+    let isValid = true;
+    
+    // Check all required fields
+    inputs.forEach(input => {
+      if (input.hasAttribute('required') && !input.value.trim()) {
+        isValid = false;
+        input.style.border = "2px solid red";
+      } else {
+        input.style.border = "";
+      }
+    });
+    
+    // Validate year
+    const year = document.querySelector("#inv_year");
+    const currentYear = new Date().getFullYear();
+    if (year.value < 1900 || year.value > currentYear + 1) {
+      isValid = false;
+      year.style.border = "2px solid red";
+      alert("Please enter a valid year between 1900 and " + (currentYear + 1));
+    }
+    
+    // Validate price
+    const price = document.querySelector("#inv_price");
+    if (price.value < 0) {
+      isValid = false;
+      price.style.border = "2px solid red";
+      alert("Price cannot be negative");
+    }
+    
+    // Validate miles
+    const miles = document.querySelector("#inv_miles");
+    if (miles.value < 0) {
+      isValid = false;
+      miles.style.border = "2px solid red";
+      alert("Miles cannot be negative");
+    }
+    
+    if (!isValid) {
+      event.preventDefault();
+      alert("Please correct the highlighted fields");
+    }
+  });
+  
+  // Remove red border when user starts typing
+  inputs.forEach(input => {
+    input.addEventListener('input', function() {
+      this.style.border = "";
+    });
+  });
+});
+</script>

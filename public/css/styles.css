@@ -349,3 +349,107 @@ nav a {
   list-style: none;
   padding: 0;
 }
+
+/************ Forms ***************/
+form {
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+fieldset {
+  background-color: #4a9fd9;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 0;
+}
+
+fieldset p {
+  margin: 10px 0 5px 0;
+  font-size: 14px;
+  font-style: italic;
+}
+
+form label {
+  display: block;
+  font-weight: bold;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  color: white;
+}
+
+form input[type="text"],
+form input[type="number"],
+form select,
+form textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: white;
+}
+
+form input[type="submit"] {
+  background-color: #333;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+form input[type="submit"]:hover {
+  background-color: #555;
+}
+
+/* Management page links */
+main ul li {
+  margin: 10px 0;
+}
+
+main ul li a {
+  color: #4a9fd9;
+  text-decoration: underline;
+}
+
+main ul li a:hover {
+  color: #2d5aa0;
+}
+
+/* Error messages */
+.notice {
+  background-color: #ffebee;
+  border: 1px solid #f44336;
+  color: #c62828;
+  padding: 10px;
+  border-radius: 4px;
+  margin: 10px 0;
+  list-style: none;
+}
+
+.notice li {
+  margin: 5px 0;
+}
+
+/* Flash messages */
+.flash {
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 4px;
+}
+
+.flash.notice {
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+  color: #155724;
+}
+
+.flash.error {
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  color: #721c24;
+}
