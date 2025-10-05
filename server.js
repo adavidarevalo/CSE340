@@ -37,12 +37,20 @@ app.use(express.urlencoded({ extended: true }))
 
 app.use(static)
 
+// Static files
+app.use(express.static('public'))
 
 app.get("/", utilities.handleErrors(baseController.buildHome))
 
 
 app.use("/inv", utilities.handleErrors(inventoryRoute))
 
+
+// Require account routes
+const accountRoute = require('./routes/accountRoute')
+
+// Use account routes
+app.use('/account', accountRoute)
 
 app.use(async (req, res, next) => {
   next({status: 404, message: "Slow down, Speed Racer! That page does not exist."});

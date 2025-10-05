@@ -1,0 +1,106 @@
+/* Account Styles - Login and Registration */
+.account-form {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 0;
+}
+
+.form-container {
+  background: linear-gradient(135deg, #78a7d1, #5383b7);
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  color: #fff;
+}
+
+.form-container h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  text-align: center;
+  color: #fff;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: box-shadow 0.3s ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+}
+
+.form-button {
+  background-color: #f8f8f8;
+  color: #3070a8;
+  border: none;
+  border-radius: 5px;
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.form-button:hover {
+  background-color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-footer {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.form-footer a {
+  color: #fff;
+  font-weight: 600;
+  text-decoration: underline;
+  transition: color 0.3s ease;
+}
+
+.form-footer a:hover {
+  color: #f0f0f0;
+}
+
+/* For notices/errors */
+.notice {
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #d32f2f;
+  border-radius: 5px;
+  padding: 0.75rem;
+  margin-bottom: 1.5rem;
+  list-style-type: none;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 480px) {
+  .account-form {
+    max-width: 100%;
+    margin: 1rem;
+  }
+  
+  .form-container {
+    padding: 1.5rem;
+  }
+}

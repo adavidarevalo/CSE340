@@ -453,3 +453,61 @@ main ul li a:hover {
   border-color: #f5c6cb;
   color: #721c24;
 }
+
+/* ========== Account styles ========== */
+.login-container {
+  max-width: 400px;
+  width: 100%;
+  margin: 2rem auto;
+  background-color: #0099cc;
+  border-radius: 10px;
+  padding: 20px;
+  color: #000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.login-form {
+  border: 2px solid #008abf;
+  border-radius: 5px;
+  margin: 20px;
+}
+
+.login-form input {
+  padding: 8px;
+  font-size: 16px;
+  margin-right: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 250px !important;
+  background: red !important;
+}
+
+.password-requirements {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  font-size: 16px;
+    width: 250px;
+}
+
+.show-password{
+  padding: 8px 20px;
+  background-color: #2f2f2f;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-bottom: 20px;
+  color: white;
+}
+
+.login-btn {
+  margin-top: 10px;
+}
+
+.show-password:hover, .login-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.account-link {
+  text-decoration: underline;
+  color: purple;
+}
