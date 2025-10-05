@@ -9,11 +9,21 @@ require('dotenv').config()
 * *************************************** */
 async function buildLogin(req, res, next) {
   let nav = await utilities.getNav()
+  let message = null
+  
+  if (req.query.notice) {
+    message = req.query.notice
+  }
+  
+  if (req.flash) {
+    message = req.flash("notice")
+  }
+  
   res.render("account/login", {
     title: "Login",
     nav,
     errors: null,
-    message: null
+    message
   })
 }
 
@@ -194,13 +204,35 @@ async function processRegistration(req, res) {
 *  Deliver account home view
 * *************************************** */
 async function buildAccountHome(req, res, next) {
-  let nav = await utilities.getNav()
-  
-  res.render("account/account", {
-    title: "Account Management",
-    nav,
-    errors: null,
-  })
+  try {
+    let nav = await utilities.getNav()
+    const welcomeMessage = "You're logged in."
+    
+    res.render("account/account", {
+      title: "Account Management",
+      nav,
+      errors: null,
+      welcomeMessage,
+      message: null
+    })
+  } catch (error) {
+    console.error("Error in buildAccountHome:", error)
+    req.flash("error", "An error occurred loading the account page")
+    res.status(500).render("errors/error", {
+      title: "Server Error",
+      nav: await utilities.getNav(),
+      message: "An error occurred loading the account page"
+    })
+  }
+}
+
+/* ****************************************
+*  Process Logout
+* *************************************** */
+async function processLogout(req, res) {
+  res.clearCookie("jwt")
+  res.clearCookie("accountData")
+  return res.redirect("/")
 }
 
 module.exports = {
@@ -208,5 +240,6 @@ module.exports = {
   buildRegister,
   processLogin,
   processRegistration,
-  buildAccountHome
+  buildAccountHome,
+  processLogout
 }

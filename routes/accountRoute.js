@@ -16,10 +16,12 @@ router.post('/login', utilities.handleErrors(accountController.processLogin))
 router.post('/register', utilities.handleErrors(accountController.processRegistration))
 
 // Deliver account home view
-router.get('/', utilities.handleErrors(accountController.buildAccountHome))
+router.get('/', utilities.checkLogin, utilities.handleErrors(accountController.buildAccountHome))
 
+// Process logout
+router.get('/logout', utilities.handleErrors(accountController.processLogout))
 
-// Deliver account home view
-router.get('/', utilities.checkLogin, accountController.buildAccountHome)
+module.exports = router
+router.get('/logout', utilities.handleErrors(accountController.processLogout))
 
 module.exports = router

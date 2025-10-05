@@ -1,8 +1,9 @@
 <% if (title) { %>
-    <h1><%= title %></h1>
-    <% } else {
-      res.redirect('/')
-    } %>
+<h1><%= title %></h1>
+<% } else { %>
+<h1>Server Error</h1>
+<% } %>
 
+<p><%= message || 'Oh no! There was a crash. Maybe try a different route?' %></p>
 
-<%- message %>
+<p><a href="/">Return to Home</a></p>

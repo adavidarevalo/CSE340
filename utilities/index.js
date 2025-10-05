@@ -125,6 +125,21 @@ const checkLogin = (req, res, next) => {
   }
 }
 
+/* ****************************************
+* Middleware to check if user is Employee or Admin
+* **************************************** */
+const checkAdminEmployee = (req, res, next) => {
+  if (res.locals.loggedin) {
+    const account = res.locals.accountData
+    if (account.account_type === "Admin" || account.account_type === "Employee") {
+      next()
+      return
+    }
+  }
+  req.flash("notice", "Please log in with appropriate credentials.")
+  return res.redirect("/account/login")
+}
+
 /* **************************************
 * Build navigation bar
 * ************************************ */
@@ -148,5 +163,6 @@ module.exports = {
   Util,
   handleErrors,
   checkLogin,
+  checkAdminEmployee,
   getNav
 }
