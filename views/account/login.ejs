@@ -12,8 +12,8 @@
 </ul>
 <% } %>
 
-<div class=" login-container login-form">
-  <form action="/account/login" method="post">
+<div class=" login-container">
+  <form action="/account/login" method="post" class="login-form">
     <div>
       <label for="email">Email Address:</label>
       <input type="email" id="email" name="email" required>
@@ -48,8 +48,6 @@
       this.textContent = 'Show Password';
     }
   });
-</script>
     document.getElementById('emailHidden').value = document.getElementById('email').value;
     document.getElementById('passwordHidden').value = document.getElementById('password').value;
-  });
 </script>

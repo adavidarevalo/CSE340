@@ -1,0 +1,26 @@
+<% if (title) { %>
+<h1><%= title %></h1>
+<% } else { %>
+<h1>Account Management</h1>
+<% } %>
+
+<% if (message) { %>
+<p class="notice"><%= message %></p>
+<% } %>
+
+<% if (errors) { %>
+<ul class="notice">
+<% errors.array().forEach(error => { %>
+  <li><%= error.msg %></li>
+<% }) %>
+</ul>
+<% } %>
+
+<div class="account-container">
+  <h2>Welcome <%= locals.accountData.account_firstname %></h2>
+  <p>You're logged in to your account.</p>
+  
+  <h3>Account Info</h3>
+  <p>Name: <%= locals.accountData.account_firstname %> <%= locals.accountData.account_lastname %></p>
+  <p>Email: <%= locals.accountData.account_email %></p>
+</div>

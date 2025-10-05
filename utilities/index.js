@@ -1,4 +1,6 @@
 const invModel = require("../models/inventory-model")
+const jwt = require("jsonwebtoken")
+require("dotenv").config()
 const Util = {}
 
 Util.getNav = async function (req, res, next) {
@@ -90,6 +92,61 @@ Util.buildClassificationList = async function (classification_id = null) {
   return classificationList
 }
 
-Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
+/* ****************************************
+* Middleware for handling errors
+* Wrap other function in this for 
+* General Error Handling
+**************************************** */
+const handleErrors = fn => (req, res, next) => 
+  Promise.resolve(fn(req, res, next)).catch(next)
 
-module.exports = Util
+/* ****************************************
+* Middleware to check token validity
+* **************************************** */
+const checkLogin = (req, res, next) => {
+  if (req.cookies.jwt) {
+    jwt.verify(
+      req.cookies.jwt,
+      process.env.ACCESS_TOKEN_SECRET,
+      function (err, accountData) {
+        if (err) {
+          req.flash("Please log in")
+          res.clearCookie("jwt")
+          res.clearCookie("accountData")
+          return res.redirect("/account/login")
+        }
+        res.locals.accountData = accountData
+        res.locals.loggedin = 1
+        next()
+      }
+    )
+  } else {
+    next()
+  }
+}
+
+/* **************************************
+* Build navigation bar
+* ************************************ */
+async function getNav() {
+  try {
+    const pool = require("../database/")
+    const data = await pool.query("SELECT * FROM classification ORDER BY classification_name")
+    let nav = '<ul class="navigation">';
+    data.rows.forEach(row => {
+      nav += `<li><a href="/inv/type/${row.classification_id}">${row.classification_name}</a></li>`
+    })
+    nav += '</ul>';
+    return nav;
+  } catch (error) {
+    console.error("getNav error:", error);
+    return '<ul class="navigation"><li><a href="/">Home</a></li></ul>';
+  }
+}
+
+module.exports = {
+  Util,
+  handleErrors,
+  checkLogin,
+  getNav
+}

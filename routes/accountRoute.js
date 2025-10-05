@@ -1,17 +1,25 @@
 const express = require('express')
 const router = new express.Router()
 const accountController = require('../controllers/accountController')
+const utilities = require('../utilities/')
 
 // Route to deliver login view
-router.get('/login', accountController.buildLogin)
+router.get('/login', utilities.handleErrors(accountController.buildLogin))
 
 // Route to deliver registration view
-router.get('/register', accountController.buildRegister)
+router.get('/register', utilities.handleErrors(accountController.buildRegister))
 
 // Process the login attempt
-router.post('/login', accountController.processLogin)
+router.post('/login', utilities.handleErrors(accountController.processLogin))
 
 // Process the registration form
-router.post('/register', accountController.processRegistration)
+router.post('/register', utilities.handleErrors(accountController.processRegistration))
+
+// Deliver account home view
+router.get('/', utilities.handleErrors(accountController.buildAccountHome))
+
+
+// Deliver account home view
+router.get('/', utilities.checkLogin, accountController.buildAccountHome)
 
 module.exports = router

@@ -456,7 +456,7 @@ main ul li a:hover {
 
 /* ========== Account styles ========== */
 .login-container {
-  max-width: 400px;
+  max-width: 330px;
   width: 100%;
   margin: 2rem auto;
   background-color: #0099cc;
@@ -467,9 +467,11 @@ main ul li a:hover {
 }
 
 .login-form {
-  border: 2px solid #008abf;
-  border-radius: 5px;
-  margin: 20px;
+  max-width: 300px;
+  margin: 0 auto;
+  background-color: #0099cc;
+  padding: 20px;
+  border-radius: 10px;
 }
 
 .login-form input {
@@ -479,7 +481,19 @@ main ul li a:hover {
   border: 1px solid #ccc;
   border-radius: 4px;
   width: 250px !important;
-  background: red !important;
+}
+
+/* Additional styles for register form */
+.login-form div {
+  margin-bottom: 15px;
+}
+
+/* Make sure register form looks good with more fields */
+@media (max-width: 768px) {
+  .login-form input {
+    width: 100%;
+    margin-bottom: 10px;
+  }
 }
 
 .password-requirements {

@@ -12,36 +12,92 @@
 </ul>
 <% } %>
 
-<div class="account-form">
-  <div class="form-container">
-    <h2>Registration Information</h2>
-    
-    <form action="/account/register" method="post">
-      <div class="form-group">
-        <label for="first_name">First Name:</label>
-        <input type="text" id="first_name" name="first_name" required>
-      </div>
+<div class="login-container">
+  <form action="/account/register" method="post" id="registerForm" class="login-form">
+    <div>
+      <label for="first_name">First Name:</label>
+      <input type="text" id="first_name" name="first_name" required>
       
-      <div class="form-group">
-        <label for="last_name">Last Name:</label>
-        <input type="text" id="last_name" name="last_name" required>
-      </div>
-      
-      <div class="form-group">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-      </div>
-      
-      <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-      </div>
-      
-      <button type="submit" class="form-button">Register</button>
-    </form>
-    
-    <div class="form-footer">
-      <p>Already have an account? <a href="/account/login">Login</a></p>
+      <label for="last_name">Last Name:</label>
+      <input type="text" id="last_name" name="last_name" required>
     </div>
-  </div>
+    
+    <div>
+      <label for="email">Email Address:</label>
+      <input type="email" id="email" name="email" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}">
+      <span id="emailError" style="color: red; display: none;">Please enter a valid email address</span>
+      
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required>
+      <span id="passwordError" style="color: red; display: none;">Password does not meet requirements</span>
+    </div>
+    
+    <div class="password-requirements">
+      Passwords must be minimum of 12 characters and include 1 capital letter, 1 number and 1 special character.
+    </div>
+    
+    <button type="button" class="show-password" id="showPassword">Show Password</button>
+    
+    <div>
+      <button type="submit" class="login-btn">Register</button>
+    </div>
+  </form>
+  
+  <p>Already have an account? <a href="/account/login" class="account-link">Login</a></p>
 </div>
+
+<script>
+  // Show/hide password functionality
+  document.getElementById('showPassword').addEventListener('click', function() {
+    const passwordField = document.getElementById('password');
+    if (passwordField.type === 'password') {
+      passwordField.type = 'text';
+      this.textContent = 'Hide Password';
+    } else {
+      passwordField.type = 'password';
+      this.textContent = 'Show Password';
+    }
+  });
+  
+  // Email validation
+  const emailInput = document.getElementById('email');
+  const emailError = document.getElementById('emailError');
+  
+  emailInput.addEventListener('input', function() {
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    
+    if (!emailPattern.test(this.value)) {
+      emailError.style.display = 'block';
+    } else {
+      emailError.style.display = 'none';
+    }
+  });
+  
+  // Password validation
+  document.getElementById('registerForm').addEventListener('submit', function(event) {
+    const password = document.getElementById('password').value;
+    const passwordError = document.getElementById('passwordError');
+    
+    // Password validation regex
+    const minLength = password.length >= 12;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+    
+    if (!(minLength && hasUpperCase && hasNumber && hasSpecialChar)) {
+      passwordError.style.display = 'block';
+      event.preventDefault();
+    } else {
+      passwordError.style.display = 'none';
+    }
+    
+    // Email validation
+    const email = document.getElementById('email').value;
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    
+    if (!emailPattern.test(email)) {
+      emailError.style.display = 'block';
+      event.preventDefault();
+    }
+  });
+</script>
