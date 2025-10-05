@@ -44,8 +44,9 @@ app.use(cookieParser())
 // Add this middleware before your routes
 app.use(utilities.checkJWTToken)
 
-// Routes
-app.use(require("./routes/static"))
+// Routes - Fix route handling
+app.get("/", utilities.handleErrors(baseController.buildHome))  // Add this line for the home route
+app.use(static)  // Use the already imported static routes instead of requiring again
 app.use("/inv", utilities.handleErrors(inventoryRoute))
 
 
