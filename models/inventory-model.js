@@ -26,21 +26,6 @@ async function getInventoryByClassificationId(classification_id) {
 }
 
 /* ***************************
- *  Get classification name by classification_id
- * ************************** */
-async function getClassificationById(classification_id) {
-  try {
-    const data = await pool.query(
-      "SELECT classification_name FROM public.classification WHERE classification_id = $1",
-      [classification_id]
-    )
-    return data.rows[0]
-  } catch (error) {
-    console.error("getClassificationById error " + error)
-  }
-}
-
-/* ***************************
  *  Get a specific vehicle's details
  * ************************** */
 async function getVehicleDetails(inv_id) {
@@ -94,4 +79,4 @@ async function checkExistingClassification(classification_name){
 }
 
 
-module.exports = {getClassifications, getInventoryByClassificationId, getVehicleDetails, addClassification, addInventory, checkExistingClassification, getClassificationById};
+module.exports = {getClassifications, getInventoryByClassificationId, getVehicleDetails, addClassification, addInventory, checkExistingClassification};
