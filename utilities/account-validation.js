@@ -1,4 +1,5 @@
 const { body, validationResult } = require('express-validator');
+const accountModel = require('../models/account-model');
 const utilities = require('.');
 
 /*  **********************************
@@ -68,4 +69,63 @@ const checkRegData = async (req, res, next) => {
   next();
 }
 
-module.exports = { registrationRules, checkRegData }
+// Account update validation rules
+const accountUpdateValidation = () => {
+  return [
+    // firstname is required and must be string
+    body('account_firstname')
+      .trim()
+      .isLength({ min: 1 })
+      .withMessage('First name is required.'),
+
+    // lastname is required and must be string
+    body('account_lastname')
+      .trim()
+      .isLength({ min: 1 })
+      .withMessage('Last name is required.'),
+
+    // valid email is required
+    body('account_email')
+      .trim()
+      .isEmail()
+      .normalizeEmail()
+      .withMessage('A valid email is required.')
+      .custom(async (account_email, { req }) => {
+        // Get existing account data to compare emails
+        const account_id = req.body.account_id
+        const accountData = await accountModel.getAccountById(account_id)
+        
+        // If email changed, check if new email exists
+        if (account_email !== accountData.account_email) {
+          const emailExists = await accountModel.checkExistingEmail(account_email)
+          if (emailExists) {
+            throw new Error("Email already exists. Please use a different email")
+          }
+        }
+        return true
+      }),
+  ]
+}
+
+// Password validation rules
+const passwordValidation = () => {
+  return [
+    body('account_password')
+      .trim()
+      .isLength({ min: 12 })
+      .withMessage('Password must be at least 12 characters')
+      .matches(/[A-Z]/)
+      .withMessage('Password must contain at least 1 uppercase letter')
+      .matches(/[0-9]/)
+      .withMessage('Password must contain at least 1 number')
+      .matches(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/)
+      .withMessage('Password must contain at least 1 special character'),
+  ]
+}
+
+module.exports = { 
+  registrationRules, 
+  checkRegData,
+  accountUpdateValidation,
+  passwordValidation 
+}

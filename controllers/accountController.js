@@ -227,15 +227,6 @@ async function buildAccountHome(req, res, next) {
 }
 
 /* ****************************************
-*  Process Logout
-* *************************************** */
-async function processLogout(req, res) {
-  res.clearCookie("jwt")
-  res.clearCookie("accountData")
-  return res.redirect("/")
-}
-
-/* ****************************************
 *  Deliver account update view
 * *************************************** */
 async function buildAccountUpdate(req, res, next) {
@@ -254,10 +245,12 @@ async function buildAccountUpdate(req, res, next) {
     title: "Update Account",
     nav,
     errors: null,
+    message: null,
     account_id: accountData.account_id,
     account_firstname: accountData.account_firstname,
     account_lastname: accountData.account_lastname,
     account_email: accountData.account_email,
+    accountData
   })
 }
 
@@ -265,23 +258,19 @@ async function buildAccountUpdate(req, res, next) {
 *  Process Account Update
 * *************************************** */
 async function updateAccount(req, res) {
-  let nav = await utilities.getNav()
   const { account_id, account_firstname, account_lastname, account_email } = req.body
+  let nav = await utilities.getNav()
   
-  // Server-side validation
-  let errors = []
-  if (!account_firstname) errors.push({ msg: "First name is required" })
-  if (!account_lastname) errors.push({ msg: "Last name is required" })
-  
-  const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-  if (!emailPattern.test(account_email)) errors.push({ msg: "Valid email is required" })
-  
-  if (errors.length > 0) {
+  // Check for validation errors
+  const { validationResult } = require('express-validator')
+  let errors = validationResult(req)
+  if (!errors.isEmpty()) {
     return res.render("account/update", {
       title: "Update Account",
       nav,
-      errors: { array: () => errors },
+      errors,
       message: null,
+      account_id,
       account_firstname,
       account_lastname,
       account_email,
@@ -289,25 +278,12 @@ async function updateAccount(req, res) {
     })
   }
   
-  // Check if email exists and belongs to someone else
-  const emailExists = await accountModel.checkExistingEmail(account_email)
-  const currentAccount = await accountModel.getAccountById(account_id)
-  
-  if (emailExists && currentAccount.account_email !== account_email) {
-    errors.push({ msg: "Email already exists. Please use a different email" })
-    return res.render("account/update", {
-      title: "Update Account",
-      nav,
-      errors: { array: () => errors },
-      message: null,
-      account_firstname,
-      account_lastname,
-      account_email,
-      accountData: res.locals.accountData
-    })
+  // Make sure the logged in user can only update their own account
+  if (parseInt(account_id) !== res.locals.accountData.account_id) {
+    req.flash("notice", "You can only update your own account information.")
+    return res.redirect("/account/")
   }
   
-  // Update account
   const updateResult = await accountModel.updateAccount(
     account_id,
     account_firstname,
@@ -316,28 +292,23 @@ async function updateAccount(req, res) {
   )
   
   if (updateResult) {
-    // Update the JWT and cookie with new information
+    // Update the session data with new information
     const updatedAccount = await accountModel.getAccountById(account_id)
     delete updatedAccount.account_password
-    
-    const accessToken = jwt.sign(
-      updatedAccount, 
-      process.env.ACCESS_TOKEN_SECRET, 
-      { expiresIn: 3600 }
-    )
-    
+    const accessToken = jwt.sign(updatedAccount, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 3600 })
     res.cookie("jwt", accessToken, { httpOnly: true, maxAge: 3600 * 1000 })
     res.cookie("accountData", JSON.stringify(updatedAccount), { maxAge: 3600 * 1000 })
     
-    req.flash("notice", "Account updated successfully")
+    req.flash("notice", "Account updated successfully!")
     return res.redirect("/account/")
   } else {
-    errors.push({ msg: "Update failed. Please try again." })
+    req.flash("notice", "Failed to update account.")
     return res.render("account/update", {
       title: "Update Account",
       nav,
-      errors: { array: () => errors },
+      errors,
       message: null,
+      account_id,
       account_firstname,
       account_lastname,
       account_email,
@@ -350,31 +321,31 @@ async function updateAccount(req, res) {
 *  Process Password Update
 * *************************************** */
 async function updatePassword(req, res) {
-  let nav = await utilities.getNav()
   const { account_id, account_password } = req.body
+  let nav = await utilities.getNav()
   
-  // Server-side password validation
-  let errors = []
-  const passwordRegex = {
-    minLength: account_password.length >= 12,
-    hasUpperCase: /[A-Z]/.test(account_password),
-    hasNumber: /[0-9]/.test(account_password),
-    hasSpecialChar: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(account_password)
-  }
-  
-  if (!(passwordRegex.minLength && passwordRegex.hasUpperCase && 
-        passwordRegex.hasNumber && passwordRegex.hasSpecialChar)) {
-    errors.push({ msg: "Password does not meet requirements" })
-  }
-  
-  if (errors.length > 0) {
+  // Check for validation errors
+  const { validationResult } = require('express-validator')
+  let errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    const accountData = await accountModel.getAccountById(account_id)
     return res.render("account/update", {
       title: "Update Account",
       nav,
-      errors: { array: () => errors },
+      errors,
       message: null,
+      account_id: accountData.account_id,
+      account_firstname: accountData.account_firstname,
+      account_lastname: accountData.account_lastname,
+      account_email: accountData.account_email,
       accountData: res.locals.accountData
     })
+  }
+  
+  // Make sure the logged in user can only update their own password
+  if (parseInt(account_id) !== res.locals.accountData.account_id) {
+    req.flash("notice", "You can only update your own password.")
+    return res.redirect("/account/")
   }
   
   // Hash the password
@@ -384,19 +355,46 @@ async function updatePassword(req, res) {
   const passwordChangeResult = await accountModel.updatePassword(account_id, hashedPassword)
   
   if (passwordChangeResult) {
-    req.flash("notice", "Password updated successfully")
+    req.flash("notice", "Password updated successfully!")
     return res.redirect("/account/")
   } else {
-    errors.push({ msg: "Password update failed. Please try again." })
+    req.flash("notice", "Password update failed. Please try again.")
+    const accountData = await accountModel.getAccountById(account_id)
     return res.render("account/update", {
       title: "Update Account",
       nav,
-      errors: { array: () => errors },
-      message: null,
+      errors: null,
+      message: "Password update failed. Please try again.",
+      account_id: accountData.account_id,
+      account_firstname: accountData.account_firstname,
+      account_lastname: accountData.account_lastname,
+      account_email: accountData.account_email,
       accountData: res.locals.accountData
     })
   }
 }
+
+/* ****************************************
+*  Process Logout
+* *************************************** */
+async function processLogout(req, res) {
+  res.clearCookie("jwt")
+  res.clearCookie("accountData")
+  return res.redirect("/")
+}
+
+module.exports = {
+  buildLogin,
+  buildRegister,
+  processLogin,
+  processRegistration,
+  buildAccountHome,
+  buildAccountUpdate,
+  updateAccount,
+  updatePassword,
+  processLogout
+}
+    
 
 module.exports = {
   buildLogin,

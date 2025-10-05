@@ -99,7 +99,7 @@ async function updatePassword(account_id, account_password) {
 }
 
 module.exports = {
-  registerAccount,
+  registerAccount, 
   checkExistingEmail,
   getAccountByEmail,
   getAccountById,
