@@ -12,10 +12,12 @@
 
 <p><%= welcomeMessage %></p>
 
+<p><a href="/account/update/<%= locals.accountData.account_id %>" class="account-button">Update Account Information</a></p>
+
 <% if (locals.accountData && locals.accountData.account_type) { %>
   <% if (locals.accountData.account_type === "Admin" || locals.accountData.account_type === "Employee") { %>
   <h3>Inventory Management</h3>
-  <p><a href="/inv/">Manage Inventory</a></p>
+  <p><a href="/inv/" class="management-link">Manage Inventory</a></p>
   <% } %>
 <% } %>
 

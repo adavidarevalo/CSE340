@@ -1,0 +1,225 @@
+<% if (title) { %>
+<h1><%= title %></h1>
+<% } else { %>
+<h1>Update Account</h1>
+<% } %>
+
+<% if (message) { %>
+<p class="notice"><%= message %></p>
+<% } %>
+
+<% if (errors) { %>
+<ul class="notice">
+<% errors.array().forEach(error => { %>
+  <li><%= error.msg %></li>
+<% }) %>
+</ul>
+<% } %>
+
+<!-- Account Update Form -->
+<div class="login-form">
+  <h2>Account Update</h2>
+  <form action="/account/update" method="post" id="accountUpdateForm">
+    <input type="hidden" name="account_id" value="<%= locals.accountData.account_id %>">
+    
+    <div class="form-group">
+      <label for="account_firstname">First Name:</label>
+      <input type="text" name="account_firstname" id="account_firstname" required 
+        value="<%= locals.account_firstname || locals.accountData.account_firstname %>">
+    </div>
+    
+    <div class="form-group">
+      <label for="account_lastname">Last Name:</label>
+      <input type="text" name="account_lastname" id="account_lastname" required 
+        value="<%= locals.account_lastname || locals.accountData.account_lastname %>">
+    </div>
+    
+    <div class="form-group">
+      <label for="account_email">Email Address:</label>
+      <input type="email" name="account_email" id="account_email" required 
+        value="<%= locals.account_email || locals.accountData.account_email %>">
+    </div>
+    
+    <div class="form-group">
+      <button type="submit" class="form-button">Update Account</button>
+    </div>
+  </form>
+</div>
+
+<!-- Password Change Form -->
+<div class="login-form">
+  <h2>Change Password</h2>
+  <p>Enter a new password below to change your current password.</p>
+  
+  <form action="/account/update-password" method="post" id="passwordForm">
+    <input type="hidden" name="account_id" value="<%= locals.accountData.account_id %>">
+    
+    <div class="form-group">
+      <label for="account_password">New Password:</label>
+      <input type="password" name="account_password" id="account_password" required 
+        pattern="^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>\/?]).{12,}$">
+    </div>
+    
+    <div class="password-requirements">
+      <p>Password requirements:</p>
+      <ul>
+        <li>Minimum of 12 characters</li>
+        <li>At least 1 capital letter</li>
+        <li>At least 1 number</li>
+        <li>At least 1 special character</li>
+      </ul>
+    </div>
+    
+    <div class="form-group">
+      <button type="submit" class="form-button">Change Password</button>
+    </div>
+  </form>
+</div>
+
+<p class="return-link"><a href="/account/">Return to Account Management</a></p>
+
+<script>
+  // Client-side validation for account update form
+  document.getElementById("accountUpdateForm").addEventListener("submit", function(event) {
+    let firstName = document.getElementById("account_firstname").value;
+    let lastName = document.getElementById("account_lastname").value;
+    let email = document.getElementById("account_email").value;
+    let isValid = true;
+    
+    // Clear any previous error messages
+    document.querySelectorAll(".field-error").forEach(el => el.remove());
+    
+    // First name validation
+    if(firstName.trim() === "") {
+      isValid = false;
+      showError("account_firstname", "First name is required");
+    }
+    
+    // Last name validation
+    if(lastName.trim() === "") {
+      isValid = false;
+      showError("account_lastname", "Last name is required");
+    }
+    
+    // Email validation
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if(!emailPattern.test(email)) {
+      isValid = false;
+      showError("account_email", "Please enter a valid email address");
+    }
+    
+    if(!isValid) {
+      event.preventDefault();
+    }
+  });
+  
+  // Client-side validation for password change form
+  document.getElementById("passwordForm").addEventListener("submit", function(event) {
+    let password = document.getElementById("account_password").value;
+    let isValid = true;
+    
+    // Clear any previous error messages
+    document.querySelectorAll(".password-error").forEach(el => el.remove());
+    
+    // Password validation
+    const minLength = password.length >= 12;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+    
+    if (!(minLength && hasUpperCase && hasNumber && hasSpecialChar)) {
+      isValid = false;
+      const errorDiv = document.createElement("div");
+      errorDiv.className = "password-error";
+      errorDiv.style.color = "red";
+      errorDiv.textContent = "Password does not meet requirements";
+      document.getElementById("account_password").after(errorDiv);
+    }
+    
+    if(!isValid) {
+      event.preventDefault();
+    }
+  });
+  
+  // Helper function to show field errors
+  function showError(fieldId, message) {
+    const field = document.getElementById(fieldId);
+    const errorDiv = document.createElement("div");
+    errorDiv.className = "field-error";
+    errorDiv.style.color = "red";
+    errorDiv.textContent = message;
+    field.after(errorDiv);
+  }
+</script>
+
+<style>
+  .login-form {
+    max-width: 600px;
+    margin: 2rem auto;
+    background-color: #0099cc;
+    border-radius: 10px;
+    padding: 20px;
+    color: #000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  
+  .password-requirements {
+    background-color: rgba(255, 255, 255, 0.3);
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px 0 20px 0;
+  }
+  
+  .password-requirements ul {
+    margin-top: 5px;
+    padding-left: 20px;
+  }
+  
+  .form-button {
+    background-color: #f0f0f0;
+    color: #000;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .form-button:hover {
+    background-color: #e0e0e0;
+  }
+  
+  .return-link {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .return-link a {
+    color: #0066cc;
+    text-decoration: underline;
+  }
+  
+  h2 {
+    margin-top: 0;
+    color: #000;
+  }
+</style>

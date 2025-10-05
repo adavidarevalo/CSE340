@@ -140,6 +140,33 @@ const checkAdminEmployee = (req, res, next) => {
   return res.redirect("/account/login")
 }
 
+/* ****************************************
+* Middleware for handling locals throughout the site
+* **************************************** */
+const checkJWTToken = (req, res, next) => {
+  if (req.cookies.jwt) {
+    jwt.verify(
+      req.cookies.jwt,
+      process.env.ACCESS_TOKEN_SECRET,
+      function (err, accountData) {
+        if (err) {
+          res.clearCookie("jwt")
+          res.clearCookie("accountData")
+          res.locals.loggedin = 0
+          next()
+          return
+        }
+        res.locals.accountData = accountData
+        res.locals.loggedin = 1
+        next()
+      }
+    )
+  } else {
+    res.locals.loggedin = 0
+    next()
+  }
+}
+
 /* **************************************
 * Build navigation bar
 * ************************************ */
@@ -159,10 +186,43 @@ async function getNav() {
   }
 }
 
+/* **************************************
+* Build the classification view HTML
+* ************************************ */
+async function buildClassificationGrid(data) {
+  let grid = '<ul id="inv-display">'
+  
+  // Check if data exists and has length
+  if (!data || !data.length) {
+    grid += '<li>No vehicles available</li>'
+    return grid + '</ul>'
+  }
+  
+  // Process each vehicle in the data array
+  data.forEach(vehicle => {
+    grid += '<li>'
+    grid += '<a href="/inv/detail/' + vehicle.inv_id 
+      + '" title="View ' + vehicle.inv_make + ' ' + vehicle.inv_model 
+      + ' details"><img src="' + vehicle.inv_thumbnail 
+      + '" alt="Image of ' + vehicle.inv_make + ' ' + vehicle.inv_model 
+      + ' on CSE Motors"></a>'
+    grid += '<div class="namePrice">'
+    grid += '<h2>' + vehicle.inv_make + ' ' + vehicle.inv_model + '</h2>'
+    grid += '<span>$' + new Intl.NumberFormat('en-US').format(vehicle.inv_price) + '</span>'
+    grid += '</div>'
+    grid += '</li>'
+  })
+  
+  grid += '</ul>'
+  return grid
+}
+
 module.exports = {
   Util,
   handleErrors,
   checkLogin,
   checkAdminEmployee,
-  getNav
+  getNav,
+  buildClassificationGrid,
+  checkJWTToken,
 }

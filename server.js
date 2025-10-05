@@ -14,7 +14,7 @@ app.set("view engine", "ejs")
 app.use(expressLayouts)
 app.set("layout", "./layouts/layout") 
 
-app.use(session({
+const sess = {
   store: new (require('connect-pg-simple')(session))({
     createTableIfMissing: true,
     pool,
@@ -23,8 +23,9 @@ app.use(session({
   resave: true,
   saveUninitialized: true,
   name: 'sessionId',
-}))
- 
+}
+
+app.use(session(sess))
 app.use(require('connect-flash')())
 app.use(function(req, res, next){
   res.locals.messages = require('express-messages')(req, res)
@@ -40,14 +41,11 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 
-app.use(static)
+// Add this middleware before your routes
+app.use(utilities.checkJWTToken)
 
-// Static files
-app.use(express.static('public'))
-
-app.get("/", utilities.handleErrors(baseController.buildHome))
-
-
+// Routes
+app.use(require("./routes/static"))
 app.use("/inv", utilities.handleErrors(inventoryRoute))
 
 
@@ -57,14 +55,14 @@ const accountRoute = require('./routes/accountRoute')
 // Use account routes
 app.use('/account', accountRoute)
 
-app.use(async (req, res, next) => {
-  next({status: 404, message: "Slow down, Speed Racer! That page does not exist."});
-});
+// app.use(async (req, res, next) => {
+//   next({status: 404, message: "Slow down, Speed Racer! That page does not exist."});
+// });
 
 app.use(async (err, req, res, next) => {
   let nav = await utilities.getNav()
   console.error(`Error at: "${req.originalUrl}": ${err.message}`)
-  if(err.status == 404){ message = err.message} else {message = 'Oh no! There was a crash. Maybe try a different route?'}
+  if(err.status == 404){ message = err.message} else {message = ''}
   res.render("errors/error", {
     title: err.status || 'Server Error',
     message,
@@ -78,3 +76,4 @@ const host = process.env.HOST
 app.listen(port, () => {
   console.log(`app listening on ${host}:${port}`)
 })
+

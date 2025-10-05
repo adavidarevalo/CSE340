@@ -18,10 +18,16 @@ router.post('/register', utilities.handleErrors(accountController.processRegistr
 // Deliver account home view
 router.get('/', utilities.checkLogin, utilities.handleErrors(accountController.buildAccountHome))
 
-// Process logout
-router.get('/logout', utilities.handleErrors(accountController.processLogout))
+// Deliver account update view
+router.get('/update/:account_id', utilities.checkLogin, utilities.handleErrors(accountController.buildAccountUpdate))
 
-module.exports = router
+// Process account update
+router.post('/update', utilities.handleErrors(accountController.updateAccount))
+
+// Process password update
+router.post('/update-password', utilities.handleErrors(accountController.updatePassword))
+
+// Process logout
 router.get('/logout', utilities.handleErrors(accountController.processLogout))
 
 module.exports = router
