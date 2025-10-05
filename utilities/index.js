@@ -175,6 +175,8 @@ async function getNav() {
     const pool = require("../database/")
     const data = await pool.query("SELECT * FROM classification ORDER BY classification_name")
     let nav = '<ul class="navigation">';
+    // Add Home as the first navigation option
+    nav += '<li><a href="/" title="Home page">Home</a></li>';
     data.rows.forEach(row => {
       nav += `<li><a href="/inv/type/${row.classification_id}">${row.classification_name}</a></li>`
     })
