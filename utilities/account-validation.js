@@ -91,7 +91,6 @@ const accountUpdateValidation = () => {
       .normalizeEmail()
       .withMessage('A valid email is required.')
       .custom(async (account_email, { req }) => {
-        // Get existing account data to compare emails
         const account_id = req.body.account_id
         const accountData = await accountModel.getAccountById(account_id)
         
