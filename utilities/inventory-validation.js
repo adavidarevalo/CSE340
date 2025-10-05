@@ -3,12 +3,8 @@ const { body, validationResult } = require("express-validator")
 const validate = {}
 const invModel = require("../models/inventory-model")
 
-/*  **********************************
- *  Add Classification Data Validation Rules
- * ********************************* */
 validate.classificationRules = () => {
   return [
-    // Classification name is required and must be string
     body("classification_name")
       .trim()
       .isLength({ min: 1 })
@@ -24,9 +20,6 @@ validate.classificationRules = () => {
   ]
 }
 
-/* ******************************
- * Check data and return errors or continue to add classification
- * ***************************** */
 validate.checkClassificationData = async (req, res, next) => {
   const { classification_name } = req.body
   let errors = []
@@ -44,66 +37,53 @@ validate.checkClassificationData = async (req, res, next) => {
   next()
 }
 
-/*  **********************************
- *  Add Inventory Data Validation Rules
- * ********************************* */
 validate.inventoryRules = () => {
   return [
-    // Classification is required and must be valid
     body("classification_id")
       .trim()
       .isInt({ min: 1 })
       .withMessage("Please choose a classification."),
     
-    // Make is required and must be string
     body("inv_make")
       .trim()
       .isLength({ min: 1 })
       .withMessage("Please provide a make."),
     
-    // Model is required and must be string
     body("inv_model")
       .trim()
       .isLength({ min: 1 })
       .withMessage("Please provide a model."),
     
-    // Year is required and must be 4 digit number
     body("inv_year")
       .trim()
       .isInt({ min: 1900, max: new Date().getFullYear() + 1 })
       .withMessage("Please provide a valid 4-digit year."),
     
-    // Description is required
     body("inv_description")
       .trim()
       .isLength({ min: 1 })
       .withMessage("Please provide a description."),
     
-    // Image path is required
     body("inv_image")
       .trim()
       .isLength({ min: 1 })
       .withMessage("Please provide an image path."),
     
-    // Thumbnail path is required
     body("inv_thumbnail")
       .trim()
       .isLength({ min: 1 })
       .withMessage("Please provide a thumbnail path."),
     
-    // Price is required and must be decimal
     body("inv_price")
       .trim()
       .isFloat({ min: 0 })
       .withMessage("Please provide a valid price."),
     
-    // Miles is required and must be integer
     body("inv_miles")
       .trim()
       .isInt({ min: 0 })
       .withMessage("Please provide valid miles."),
     
-    // Color is required
     body("inv_color")
       .trim()
       .isLength({ min: 1 })
@@ -111,9 +91,6 @@ validate.inventoryRules = () => {
   ]
 }
 
-/* ******************************
- * Check data and return errors or continue to add inventory
- * ***************************** */
 validate.checkInventoryData = async (req, res, next) => {
   const { classification_id, inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color } = req.body
   let errors = []

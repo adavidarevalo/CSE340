@@ -3,9 +3,6 @@ const utilities = require("../utilities/")
 
 const invCont = {}
 
-/* ***************************
- *  Build inventory by classification view
- * ************************** */
 invCont.buildByClassificationId = async function (req, res, next) {
   const classification_id = req.params.classificationId
   const data = await invModel.getInventoryByClassificationId(classification_id)
@@ -19,9 +16,6 @@ invCont.buildByClassificationId = async function (req, res, next) {
   })
 }
 
-/* ***************************
-*  Build a specific vehicle detail view
-* ************************** */
 invCont.buildVehicleDetail = async function (req, res, next) {
   const inv_id = req.params.invId
   const data = await invModel.getVehicleDetails(inv_id)
@@ -34,9 +28,6 @@ invCont.buildVehicleDetail = async function (req, res, next) {
   })
 }
 
-/* ***************************
- *  Build management view
- * ************************** */
 invCont.buildManagement = async function (req, res, next) {
   let nav = await utilities.getNav()
   res.render("./inventory/management", {
@@ -46,9 +37,6 @@ invCont.buildManagement = async function (req, res, next) {
   })
 }
 
-/* ***************************
- *  Build add classification view
- * ************************** */
 invCont.buildAddClassification = async function (req, res, next) {
   let nav = await utilities.getNav()
   res.render("./inventory/add-classification", {
@@ -58,9 +46,6 @@ invCont.buildAddClassification = async function (req, res, next) {
   })
 }
 
-/* ***************************
- *  Build add inventory view
- * ************************** */
 invCont.buildAddInventory = async function (req, res, next) {
   let nav = await utilities.getNav()
   let classificationList = await utilities.buildClassificationList()
@@ -72,9 +57,6 @@ invCont.buildAddInventory = async function (req, res, next) {
   })
 }
 
-/* ****************************************
-*  Process add classification
-* *************************************** */
 invCont.addClassification = async function (req, res) {
   let nav = await utilities.getNav()
   const { classification_name } = req.body
@@ -102,9 +84,6 @@ invCont.addClassification = async function (req, res) {
   }
 }
 
-/* ****************************************
-*  Process add inventory
-* *************************************** */
 invCont.addInventory = async function (req, res) {
   let nav = await utilities.getNav()
   let classificationList = await utilities.buildClassificationList()
