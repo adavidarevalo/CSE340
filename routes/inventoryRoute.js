@@ -5,7 +5,7 @@ const utilities = require("../utilities/")
 
 // Public routes - accessible to all visitors
 router.get("/type/:classificationId", utilities.handleErrors(invController.buildByClassificationId))
-router.get("/detail/:inventoryId", utilities.handleErrors(invController.buildByInventoryId))
+router.get("/detail/:inventoryId", utilities.handleErrors(invController.buildVehicleDetail))
 
 // Following routes are protected - only for employees and admins
 // Inventory management views

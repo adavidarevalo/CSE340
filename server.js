@@ -32,33 +32,37 @@ app.use(function(req, res, next){
   next()
 })
 
-// Middleware
+
 const cookieParser = require("cookie-parser")
 
-// Express middleware
+
 app.use(express.static("public"))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 
-// Add this middleware before your routes
+
 app.use(utilities.checkJWTToken)
 
-// Routes - Fix route handling
-app.get("/", utilities.handleErrors(baseController.buildHome))  // Add this line for the home route
-app.use(static)  // Use the already imported static routes instead of requiring again
+
+app.get("/", utilities.handleErrors(baseController.buildHome))  
+app.use(static)  
 app.use("/inv", utilities.handleErrors(inventoryRoute))
 
 
-// Require account routes
 const accountRoute = require('./routes/accountRoute')
 
-// Use account routes
+const reviewRoute = require('./routes/reviewRoute')
+
+
 app.use('/account', accountRoute)
 
-// app.use(async (req, res, next) => {
-//   next({status: 404, message: "Slow down, Speed Racer! That page does not exist."});
-// });
+
+app.use('/reviews', reviewRoute)
+
+
+
+
 
 app.use(async (err, req, res, next) => {
   let nav = await utilities.getNav()

@@ -92,17 +92,9 @@ Util.buildClassificationList = async function (classification_id = null) {
   return classificationList
 }
 
-/* ****************************************
-* Middleware for handling errors
-* Wrap other function in this for 
-* General Error Handling
-**************************************** */
 const handleErrors = fn => (req, res, next) => 
   Promise.resolve(fn(req, res, next)).catch(next)
 
-/* ****************************************
-* Middleware to check token validity
-* **************************************** */
 const checkLogin = (req, res, next) => {
   if (req.cookies.jwt) {
     jwt.verify(
@@ -125,9 +117,6 @@ const checkLogin = (req, res, next) => {
   }
 }
 
-/* ****************************************
-* Middleware to check if user is Employee or Admin
-* **************************************** */
 const checkAdminEmployee = (req, res, next) => {
   if (res.locals.loggedin) {
     const account = res.locals.accountData
@@ -140,9 +129,6 @@ const checkAdminEmployee = (req, res, next) => {
   return res.redirect("/account/login")
 }
 
-/* ****************************************
-* Middleware for handling locals throughout the site
-* **************************************** */
 const checkJWTToken = (req, res, next) => {
   if (req.cookies.jwt) {
     jwt.verify(
@@ -167,16 +153,11 @@ const checkJWTToken = (req, res, next) => {
   }
 }
 
-/* **************************************
-* Build navigation bar
-* ************************************ */
 async function getNav() {
   try {
     const pool = require("../database/")
     const data = await pool.query("SELECT * FROM classification ORDER BY classification_name")
     let nav = '<ul class="navigation">';
-    // Add Home as the first navigation option
-    nav += '<li><a href="/" title="Home page">Home</a></li>';
     data.rows.forEach(row => {
       nav += `<li><a href="/inv/type/${row.classification_id}">${row.classification_name}</a></li>`
     })
@@ -188,19 +169,14 @@ async function getNav() {
   }
 }
 
-/* **************************************
-* Build the classification view HTML
-* ************************************ */
 async function buildClassificationGrid(data) {
   let grid = '<ul id="inv-display">'
   
-  // Check if data exists and has length
   if (!data || !data.length) {
     grid += '<li>No vehicles available</li>'
     return grid + '</ul>'
   }
   
-  // Process each vehicle in the data array
   data.forEach(vehicle => {
     grid += '<li>'
     grid += '<a href="/inv/detail/' + vehicle.inv_id 
@@ -219,6 +195,53 @@ async function buildClassificationGrid(data) {
   return grid
 }
 
+async function buildReviewsHTML(reviews, averageRating, isLoggedIn, vehicleId, hasUserReview) {
+  let html = '<div class="reviews-section">'
+  html += '<h3>Customer Reviews</h3>'
+  
+  if (averageRating && averageRating.review_count > 0) {
+    html += '<div class="average-rating">'
+    html += '<div class="rating-display">'
+    for (let i = 1; i <= 5; i++) {
+      html += i <= Math.round(averageRating.avg_rating) ? '<span class="star filled">★</span>' : '<span class="star">★</span>'
+    }
+    html += '</div>'
+    html += `<span class="rating-text">${parseFloat(averageRating.avg_rating).toFixed(1)} out of 5 (${averageRating.review_count} review${averageRating.review_count === 1 ? '' : 's'})</span>`
+    html += '</div>'
+  }
+  
+  if (isLoggedIn && !hasUserReview) {
+    html += `<div class="add-review-link"><a href="/reviews/add/${vehicleId}" class="btn-review">Write a Review</a></div>`
+  }
+  
+  if (reviews && reviews.length > 0) {
+    html += '<div class="reviews-list">'
+    reviews.forEach(review => {
+      html += '<div class="review-item">'
+      html += '<div class="review-header">'
+      html += `<strong>${review.account_firstname} ${review.account_lastname.charAt(0)}.</strong>`
+      html += '<div class="review-rating">'
+      for (let i = 1; i <= 5; i++) {
+        html += i <= review.review_rating ? '<span class="star filled">★</span>' : '<span class="star">★</span>'
+      }
+      html += '</div>'
+      html += '</div>'
+      html += `<h4>${review.review_title}</h4>`
+      html += `<p>${review.review_text}</p>`
+      html += `<small>Reviewed on ${new Date(review.review_date).toLocaleDateString()}</small>`
+      html += '</div>'
+    })
+    html += '</div>'
+  } else if (!isLoggedIn) {
+    html += '<p><a href="/account/login">Login</a> to write a review for this vehicle.</p>'
+  } else {
+    html += '<p>No reviews yet. Be the first to review this vehicle!</p>'
+  }
+  
+  html += '</div>'
+  return html
+}
+
 module.exports = {
   Util,
   handleErrors,
@@ -226,5 +249,8 @@ module.exports = {
   checkAdminEmployee,
   getNav,
   buildClassificationGrid,
+  buildVehicleDetail: Util.buildVehicleDetail,
+  buildClassificationList: Util.buildClassificationList,
   checkJWTToken,
+  buildReviewsHTML,
 }

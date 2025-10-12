@@ -525,3 +525,7 @@ main ul li a:hover {
   text-decoration: underline;
   color: purple;
 }
+
+.filled {
+  color: yellow;
+}

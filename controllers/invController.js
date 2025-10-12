@@ -1,4 +1,5 @@
 const invModel = require("../models/inventory-model")
+const reviewModel = require("../models/review-model")
 const utilities = require("../utilities/")
 
 const invCont = {}
@@ -17,14 +18,27 @@ invCont.buildByClassificationId = async function (req, res, next) {
 }
 
 invCont.buildVehicleDetail = async function (req, res, next) {
-  const inv_id = req.params.invId
+  const inv_id = req.params.inventoryId
   const data = await invModel.getVehicleDetails(inv_id)
   const detail = await utilities.buildVehicleDetail(data)
+  
+  const reviews = await reviewModel.getReviewsByVehicleId(inv_id)
+  const averageRating = await reviewModel.getAverageRating(inv_id)
+  
+  const isLoggedIn = res.locals.loggedin || false
+  let hasUserReview = false
+  if (isLoggedIn && res.locals.accountData) {
+    hasUserReview = await reviewModel.checkExistingReview(inv_id, res.locals.accountData.account_id)
+  }
+  
+  const reviewsHTML = await utilities.buildReviewsHTML(reviews, averageRating, isLoggedIn, inv_id, hasUserReview)
+  
   let nav = await utilities.getNav()
   res.render("./inventory/detail", {
     title: data.inv_make + " " + data.inv_model,
     nav,
     detail,
+    reviewsHTML,
   })
 }
 
@@ -70,7 +84,7 @@ invCont.addClassification = async function (req, res) {
       "notice",
       `Congratulations, you've added ${classification_name} classification.`
     )
-    nav = await utilities.getNav() // Regenerate nav with new classification
+    nav = await utilities.getNav()
     res.status(201).render("inventory/management", {
       title: "Vehicle Management",
       nav,

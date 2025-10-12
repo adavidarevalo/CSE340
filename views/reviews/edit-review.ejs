@@ -1,0 +1,124 @@
+<% if (title) { %>
+  <h1><%= title %></h1>
+<% } else {res.redirect('/')} %>
+
+<%- messages() %>
+
+<div class="review-form">
+  <h2>Edit Your Review</h2>
+  <p>Update your review for this <%= review.inv_year %> <%= review.inv_make %> <%= review.inv_model %>.</p>
+  
+  <form action="/reviews/edit" method="post">
+    <input type="hidden" name="review_id" value="<%= review.review_id %>">
+    
+    <fieldset>
+      <legend>Rating *</legend>
+      <div class="rating-input">
+        <% for(let i = 5; i >= 1; i--) { %>
+          <input type="radio" id="star<%= i %>" name="review_rating" value="<%= i %>" 
+                 <%= (review.review_rating == i) ? 'checked' : '' %>>
+          <label for="star<%= i %>">★</label>
+        <% } %>
+      </div>
+    </fieldset>
+    
+    <label for="review_title">Review Title *</label>
+    <input type="text" 
+           id="review_title" 
+           name="review_title" 
+           value="<%= review.review_title %>"
+           maxlength="100"
+           required>
+    
+    <label for="review_text">Your Review *</label>
+    <textarea id="review_text" 
+              name="review_text" 
+              rows="5" 
+              maxlength="1000"
+              required><%= review.review_text %></textarea>
+    
+    <button type="submit" class="btn-primary">Update Review</button>
+    <a href="/reviews/" class="btn-secondary">Cancel</a>
+  </form>
+</div>
+
+<style>
+.review-form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.rating-input {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  margin: 10px 0;
+}
+
+.rating-input input[type="radio"] {
+  display: none;
+}
+
+.rating-input label {
+  font-size: 2em;
+  color: #ddd;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.rating-input input:checked ~ label,
+.rating-input label:hover,
+.rating-input label:hover ~ label {
+  color: #ffd700;
+}
+
+.review-form label {
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.review-form input[type="text"],
+.review-form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.review-form textarea {
+  resize: vertical;
+}
+
+.btn-primary, .btn-secondary {
+  display: inline-block;
+  padding: 10px 20px;
+  margin: 10px 5px 0 0;
+  text-decoration: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-secondary:hover {
+  background-color: #545b62;
+}
+</style>

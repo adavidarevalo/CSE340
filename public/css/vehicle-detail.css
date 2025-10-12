@@ -1,0 +1,310 @@
+/* Enhanced Vehicle Detail Page Styling */
+
+/* Vehicle Detail Container */
+#detail-display {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 40px;
+  padding: 30px;
+  background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+#detail-display::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #49a1d2, #667eea, #764ba2);
+  background-size: 300% 100%;
+  animation: gradientShift 3s ease infinite;
+}
+
+#detail-display-image {
+  position: relative;
+  overflow: hidden;
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease;
+}
+
+#detail-display-image:hover {
+  transform: scale(1.02);
+}
+
+#detail-display-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 15px;
+  transition: transform 0.3s ease;
+}
+
+#detail-display-image:hover img {
+  transform: scale(1.05);
+}
+
+#detail-display-info {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#detail-display-info h2 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+  font-size: 1.8em;
+  font-weight: 600;
+  position: relative;
+}
+
+#detail-display-info h2:first-child {
+  color: #49a1d2;
+  font-size: 2.2em;
+  margin-bottom: 20px;
+}
+
+#detail-display-info h2:first-child::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #49a1d2, #667eea);
+  border-radius: 2px;
+}
+
+#detail-display-info hr {
+  border: none;
+  height: 2px;
+  background: linear-gradient(90deg, #49a1d2, transparent);
+  margin: 20px 0;
+  border-radius: 1px;
+}
+
+#detail-display-info p {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #555;
+  margin: 20px 0;
+  text-align: justify;
+  padding: 20px;
+  background: rgba(73, 161, 210, 0.05);
+  border-radius: 10px;
+  border-left: 4px solid #49a1d2;
+}
+
+#detail-display-info ul {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+#detail-display-info li {
+  padding: 12px 0;
+  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+#detail-display-info li:hover {
+  background: rgba(73, 161, 210, 0.05);
+  transform: translateX(5px);
+  border-radius: 8px;
+  padding: 12px 15px;
+}
+
+#detail-display-info li:last-child {
+  border-bottom: none;
+}
+
+#detail-display-info li strong {
+  color: #2c3e50;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+#detail-display-info li strong::before {
+  content: '▶';
+  color: #49a1d2;
+  margin-right: 10px;
+  font-size: 12px;
+}
+
+/* Price highlight */
+#detail-display-info h2:nth-child(3) {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  padding: 15px 25px;
+  border-radius: 50px;
+  text-align: center;
+  font-size: 2em;
+  margin: 25px 0;
+  box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+#detail-display-info h2:nth-child(3)::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  animation: shimmer 4s ease-in-out infinite;
+}
+
+/* No reviews message styling */
+.reviews-section p {
+  text-align: center;
+  font-size: 18px;
+  color: #6c757d;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 15px;
+  border: 2px dashed #dee2e6;
+  margin: 30px 0;
+}
+
+.reviews-section p a {
+  color: #49a1d2;
+  text-decoration: none;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.reviews-section p a:hover {
+  color: #2c3e50;
+  text-decoration: underline;
+}
+
+/* Page title styling */
+h1 {
+  color: #2c3e50;
+  text-align: center;
+  font-size: 2.5em;
+  margin-bottom: 30px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+h1::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 4px;
+  background: linear-gradient(90deg, #49a1d2, #667eea);
+  border-radius: 2px;
+}
+
+/* Messages styling */
+.notice {
+  padding: 15px 25px;
+  margin: 20px 0;
+  border-radius: 10px;
+  font-weight: 500;
+  text-align: center;
+  animation: fadeInDown 0.5s ease;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Success message */
+.notice.success {
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  color: #155724;
+  border: 2px solid #28a745;
+}
+
+/* Error message */
+.notice.error {
+  background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+  color: #721c24;
+  border: 2px solid #dc3545;
+}
+
+/* Info message */
+.notice {
+  background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+  color: #0c5460;
+  border: 2px solid #17a2b8;
+}
+
+/* Responsive Design for Detail Page */
+@media screen and (max-width: 768px) {
+  #detail-display {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 20px;
+    margin: 20px 10px;
+  }
+  
+  #detail-display-info {
+    padding: 10px;
+  }
+  
+  #detail-display-info h2:first-child {
+    font-size: 1.8em;
+  }
+  
+  #detail-display-info h2:nth-child(3) {
+    font-size: 1.6em;
+    padding: 12px 20px;
+  }
+  
+  h1 {
+    font-size: 2em;
+    margin: 20px 10px;
+  }
+  
+  #detail-display-info li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  #detail-display {
+    margin: 10px 5px;
+    padding: 15px;
+  }
+  
+  h1 {
+    font-size: 1.6em;
+  }
+  
+  #detail-display-info h2:first-child {
+    font-size: 1.5em;
+  }
+  
+  #detail-display-info h2:nth-child(3) {
+    font-size: 1.4em;
+    padding: 10px 15px;
+  }
+}
